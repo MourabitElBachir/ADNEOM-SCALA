@@ -20,8 +20,8 @@ class e0_list extends HandsOnSuite {
 
     final def union[B >: A](list:List[B]):List[B]= {
       this match {
-        case Cons(head,tail) => Cons(head, ???)
-        case Nil => ???
+        case Cons(head,tail) => Cons(head, tail.union(list))
+        case Nil => list
       }
     }
 
@@ -44,16 +44,20 @@ class e0_list extends HandsOnSuite {
    */
   case class Cons[A](head:A, tail:List[A]) extends  List[A] {
 
-    def map[B](fonction:A => B):List[B] = ???
+    def map[B](fonction:A => B):List[B] = new Cons(fonction(head), tail.map(fonction))
 
 
     /**
      * l'implémentation de flatMap a besoin d'union
      */
-    def flatMap[B](fonction:A => List[B]):List[B] = ???
+    def flatMap[B](fonction:A => List[B]):List[B] = fonction(head).union(tail.flatMap(fonction))
 
-    def filter(fonction:A => Boolean):List[A] = ???
+    def filter(fonction:A => Boolean):List[A] =
 
+      fonction(head) match {
+        case true => Cons(head, tail.filter(fonction))
+        case false => tail.filter(fonction)
+      }
   }
 
   /**
@@ -62,11 +66,11 @@ class e0_list extends HandsOnSuite {
   case object Nil extends List[Nothing] {
     type A = Nothing
 
-    def map[B](fonction:A => B):List[B]  = ???
+    def map[B](fonction:A => B):List[B]  = Nil
 
     def flatMap[B](fonction:A => List[B]):List[B] = Nil
 
-    def filter(fonction:A => Boolean):List[A] = ???
+    def filter(fonction:A => Boolean):List[A] = Nil
   }
 
   exercice("création") {
