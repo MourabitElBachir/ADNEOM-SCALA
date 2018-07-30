@@ -47,33 +47,40 @@ class e3_on_a_besoin_de_la_covariance extends HandsOnSuite {
 
     type A = Nothing
 
-    override def map[B](fonction:A => B):Sac[B]  = ???
+    override def map[B](fonction:A => B):Sac[B]  = SacVide(items)
 
-    override def flatMap[B](fonction:A => Sac[B]):Sac[B]  = ???
+    override def flatMap[B](fonction:A => Sac[B]):Sac[B]  = SacVide()
 
-    override def filter(fonction:A => Boolean):Sac[A]  = ???
+    override def filter(fonction:A => Boolean):Sac[A]  = SacVide(items)
 
     override def valeurOuSinon[B >: A](replacement:B):B = replacement
 
     override val isEmpty: Boolean = true
 
-    def addItems(items:Set[String]):Sac[A] = ???
+    def addItems(items:Set[String]):Sac[A] = this.copy(this.items.union(items))
 
   }
 
   case class SacPlein[A](valeur:A , items:Set[String] = Set.empty) extends Sac[A] {
 
-    override def map[B](fonction:A => B):Sac[B]  = ???
+    override def map[B](fonction:A => B):Sac[B]  = this.copy(fonction(valeur))
 
-    override def flatMap[B](fonction:A => Sac[B]):Sac[B]  = ???
+    override def flatMap[B](fonction:A => Sac[B]):Sac[B]  = {
+      val res:Sac[B] = fonction(valeur)
+      res.addItems(this.items)
+    }
 
-    override def filter(fonction:A => Boolean):Sac[A]  = ???
+    override def filter(fonction:A => Boolean):Sac[A]  =
+      fonction(valeur) match {
+        case true => this.copy(valeur)
+        case _ => SacVide()
+      }
 
     override def valeurOuSinon[B >: A](replacement:B):B = valeur
 
     override val isEmpty: Boolean = false
 
-    def addItems(items:Set[String]):Sac[A] = ???
+    def addItems(items:Set[String]):Sac[A] = this.copy(valeur, this.items.union(items))
 
   }
 

@@ -24,7 +24,7 @@ class e0_une_mise_en_abime /* ou un sac de sac */ extends HandsOnSuite {
      * @param fonction la fonction a appliquer à valeur
      * @return un Sac
      */
-    def map(fonction:Int => Int):Sac = ???
+    def map(fonction:Int => Int):Sac = this.copy(fonction(valeur))
 
    /**  Honnêtement, ce n'est pas le concept le plus simple mais il faut se lancer !!! :)
      *
@@ -46,8 +46,8 @@ class e0_une_mise_en_abime /* ou un sac de sac */ extends HandsOnSuite {
      *
      */
     def flatMap(fonction:Int => Sac):Sac = {
-      val res:Sac = ???
-      res.copy(items = ???)
+      val res:Sac = fonction(valeur)
+      res.copy(items = this.items.union(res.items))
     }
   }
 
@@ -58,13 +58,13 @@ class e0_une_mise_en_abime /* ou un sac de sac */ extends HandsOnSuite {
 
     monPetitSacDeZero.valeur should be(0)
 
-    monPetitSacDeZero.copy(1) should be(__)
+    monPetitSacDeZero.copy(1) should be(Sac(1, Set("un portable")))
 
     def incrémenteUnSac(sac:Sac):Sac = sac.copy(sac.valeur + 1)
 
-    incrémenteUnSac(monPetitSacDeZero).valeur should be(__)
+    incrémenteUnSac(monPetitSacDeZero).valeur should be(1)
 
-    incrémenteUnSac(monPetitSacDeZero).items contains "un portable" should be(__)
+    incrémenteUnSac(monPetitSacDeZero).items contains "un portable" should be(true)
 
   }
 
@@ -95,7 +95,7 @@ class e0_une_mise_en_abime /* ou un sac de sac */ extends HandsOnSuite {
 
     // ici on a rajouté .asInstanceOf[Int]
     // pour des soucis de compilation, il faudra donc remplacer «__.asInstanceOf[Int]»
-    val monPetitSacDeUn  = (for (i <- monPetitSacDeZero) yield (i + __.asInstanceOf[Int]))
+    val monPetitSacDeUn  = (for (i <- monPetitSacDeZero) yield (i + 1))
 
     /*
      * Le compilateur scala traduit cette boucle for par :
