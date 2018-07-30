@@ -43,11 +43,11 @@ class e3_un_sac_covariant extends HandsOnSuite {
 
     type A = Nothing
 
-    override def map[B](fonction:A => B):Sac[B]  = ???
+    override def map[B](fonction:A => B):Sac[B]  = SacVide
 
-    override def flatMap[B](fonction:A => Sac[B]):Sac[B]  = ???
+    override def flatMap[B](fonction:A => Sac[B]):Sac[B]  = SacVide
 
-    override def filter(fonction:A => Boolean):Sac[A]  = ???
+    override def filter(fonction:A => Boolean):Sac[A]  = SacVide
 
     override def contenuOuSinon[B >: A](replacement:B):B = replacement
 
@@ -57,11 +57,15 @@ class e3_un_sac_covariant extends HandsOnSuite {
 
   case class SacPlein[A](contenu:A) extends Sac[A] {
 
-    override def map[B](fonction:A => B):Sac[B]  = ???
+    override def map[B](fonction:A => B):Sac[B]  = this.copy(fonction(contenu))
 
-    override def flatMap[B](fonction:A => Sac[B]):Sac[B]  = ???
+    override def flatMap[B](fonction:A => Sac[B]):Sac[B]  = fonction(contenu)
 
-    override def filter(fonction:A => Boolean):Sac[A]  = ???
+    override def filter(fonction:A => Boolean):Sac[A]  =
+      fonction(contenu) match {
+        case true => this.copy(contenu)
+        case _ => SacVide
+      }
 
     override def contenuOuSinon[B >: A](replacement:B):B = contenu
 

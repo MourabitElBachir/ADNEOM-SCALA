@@ -38,22 +38,26 @@ class e2_un_sac_algebrique extends HandsOnSuite {
 
   case object SacVide extends Sac {
 
-    override def map(fonction:Int => Int):Sac = ???
+    override def map(fonction:Int => Int):Sac = SacVide
 
-    override def flatMap(fonction:Int => Sac):Sac = ???
+    override def flatMap(fonction:Int => Sac):Sac = SacVide
 
-    override def filter(fonction:Int => Boolean):Sac = ???
+    override def filter(fonction:Int => Boolean):Sac = SacVide
 
     override def contenuOuSinon(replacement:Int):Int = replacement
   }
 
   case class SacPlein(contenu:Int) extends Sac {
 
-    override def map(fonction:Int => Int):Sac = ???
+    override def map(fonction:Int => Int):Sac = this.copy(fonction(contenu))
 
-    override def flatMap(fonction:Int => Sac):Sac = ???
+    override def flatMap(fonction:Int => Sac):Sac = fonction(contenu)
 
-    override def filter(fonction:Int => Boolean):Sac = ???
+    override def filter(fonction:Int => Boolean):Sac =
+      fonction(contenu) match {
+        case true => this.copy(contenu)
+        case _ => SacVide
+      }
 
     override def contenuOuSinon(replacement:Int):Int = contenu
   }
