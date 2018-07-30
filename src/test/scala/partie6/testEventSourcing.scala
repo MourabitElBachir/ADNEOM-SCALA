@@ -43,9 +43,9 @@ package model {
     def mostRecent(n: Int): Seq[Post] = orderedByTimeAdded.takeRight(n).reverse.map(byId)
 
     def apply(event: PostEvent): Posts = event match {
-      case PostAdded(id, content)  => ???
-      case PostEdited(id, content) => ???
-      case PostDeleted(id)         => ???
+      case PostAdded(id, content)  => this.copy(byId = byId + (id -> Post(id, content)), orderedByTimeAdded = orderedByTimeAdded :+ id)
+      case PostEdited(id, content) => this.copy(byId = byId + (id -> Post(id, content)))
+      case PostDeleted(id)         => this.copy(byId = byId - id, orderedByTimeAdded = orderedByTimeAdded.filter(_ != id))
       case _ => this.copy()
     }
   }
