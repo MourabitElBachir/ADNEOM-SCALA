@@ -2,6 +2,8 @@ package type_classes
 
 import support.HandsOnSuite
 
+import scala.collection.mutable.ListBuffer
+
 
 /*
 * ici on défini notre arborescence de type json,
@@ -15,16 +17,39 @@ import support.HandsOnSuite
 sealed trait JsValue
 
 case class JsString(s:String) extends JsValue{
-  override def toString():String= ???
+  override def toString():String= "\""+s+"\""
 }
 case class JsNumber(n:Number) extends JsValue{
-  override def toString():String= ???
+  override def toString():String= n.toString
 }
 case class JsSeq(seq:Seq[JsValue]) extends JsValue{
-  override def toString():String= ???
+  override def toString():String=   {
+    var list = new ListBuffer[String]()
+    for (el <- seq) {
+      el match {
+        case a: JsValue => list += a.toString()
+        case _ => ;
+      }
+    }
+    return "[" + list.mkString(",") + "]"
+  }
 }
 case class JsObject(properties:Map[String, JsValue]) extends JsValue{
-  override def toString():String= ???
+  override def toString():String= {
+    var json = new ListBuffer[String]()
+
+    for ((k, v) <- properties) {
+      v match {
+        case a: JsValue => json +=
+          """
+            |  """" + k + "\":" + a.toString()
+        case _ => ;
+      }
+    }
+    return ("{" + json.mkString(",") +
+      """
+        |}""").stripMargin
+  }
 }
 
 /*
@@ -32,7 +57,17 @@ case class JsObject(properties:Map[String, JsValue]) extends JsValue{
 * à partir d'une liste de clé valeur de type String -> JsValue
 */
 object JsObject{
-  def apply(properties:(String,JsValue)*):JsObject= ???
+  def apply(properties:(String,JsValue)*):JsObject= {
+    // Première Idée
+    var mapRes : Map[String, JsValue] = Map()
+
+    for((k, v) <- properties) {
+      mapRes = mapRes + (k -> v)
+    }
+
+    JsObject(mapRes)
+  }
+
 }
 
 /*
@@ -63,11 +98,11 @@ object Writer{
 * ils seront présent pour tout de scope du code.
 */
 object Implicits {
-  implicit val stringWriter=Writer { s:String=> ??? }
-  implicit val intWriter=Writer { n:Int=> ??? }
-  implicit val doubleWriter=Writer { n:Double=> ??? }
-  implicit val bigDecimalWriter=Writer { n:BigDecimal=> ??? }
-  implicit def seqWriter[B](implicit writer:Writer[B])= Writer { seq:Seq[B] => ??? }
+  implicit val stringWriter=Writer { s:String=> JsString(s) }
+  implicit val intWriter=Writer { n:Int=> JsNumber(n) }
+  implicit val doubleWriter=Writer { n:Double=> JsNumber(n) }
+  implicit val bigDecimalWriter=Writer { n:BigDecimal=> JsNumber(n) }
+  implicit def seqWriter[B](implicit writer:Writer[B])= Writer { seq:Seq[B] => JsSeq(seq.map(x => writer.write(x))) }
 }
 
 /*
@@ -146,7 +181,10 @@ package client {
   case class User(name:String,age:Int,friends:Seq[String])
 
   object User{
-    implicit val userWrite:Writer[User] = Writer { u:User => ??? }
+    implicit val userWrite:Writer[User] = Writer { u:User => JsObject(
+      ("name" -> Json.toJson(u.name)),
+      ("age" -> Json.toJson(u.age)),
+      ("friends" -> Json.toJson(u.friends))) }
   }
 
   import User.userWrite
