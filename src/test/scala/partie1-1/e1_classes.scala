@@ -48,7 +48,7 @@ class e1_classes extends HandsOnSuite {
   */
   exercice("Le paramètre val définit un getter") {
     val aClass = new ClassWithValParameter("name goes here")
-    aClass.name should be(__)
+    aClass.name should be("name goes here")
   }
 
   class ClassWithVarParameter(var description: String)
@@ -57,10 +57,10 @@ class e1_classes extends HandsOnSuite {
   */
   exercice("Le paramètre var définit un getter et un setter") {
     val aClass = new ClassWithVarParameter("description goes here")
-    aClass.description should be(__)
+    aClass.description should be("description goes here")
 
     aClass.description = "new description"
-    aClass.description should be(__)
+    aClass.description should be("new description")
   }
 
 
@@ -78,9 +78,9 @@ class e1_classes extends HandsOnSuite {
     val aClass = new ClassWithPrivateVarFields("name")
     // NOTE: aClass.name n'est pas accessible
 
-    aClass.toString should be(__)
+    aClass.toString should be("name")
 
     aClass.changeName("newname")
-    aClass.toString should be(__)
+    aClass.toString should be("newname")
   }
 }

@@ -26,7 +26,7 @@ class e3_boucle_for extends HandsOnSuite {
       somme += i
     }
 
-    somme should equal(__)
+    somme should equal(45)
   }
 
   /**
@@ -42,7 +42,7 @@ class e3_boucle_for extends HandsOnSuite {
       }
     }
 
-    somme should equal(__)
+    somme should equal(20)
   }
 
   //for comprehensions
@@ -70,7 +70,7 @@ class e3_boucle_for extends HandsOnSuite {
     //en utilisant une autre fonction passée en paramètre.
     //En ce qui concerne les fonctions d’ordre supérieur et les lambda expression,
     //un jeu de tests est prévu dans la suite de l’atelier
-    uneListe.reduceLeft( (k,l) => k + l) should be(__)
+    uneListe.reduceLeft( (k,l) => k + l) should be(20)
   }
 
 
@@ -87,7 +87,7 @@ class e3_boucle_for extends HandsOnSuite {
       y <- yValues
     }
     yield (x, y)
-    coordinates(4) should be(__)
+    coordinates(4) should be((3,1))
   }
 
   /**
